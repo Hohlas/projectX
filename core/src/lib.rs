@@ -1,6 +1,5 @@
 use std::{
     panic,
-    panic::PanicInfo,
     process,
     sync::{
         atomic::{AtomicBool, Ordering},
@@ -8,7 +7,7 @@ use std::{
     },
     time::Duration,
 };
-
+use std::panic::PanicHookInfo;
 use log::*;
 
 mod fetch_stage;
@@ -17,7 +16,7 @@ mod staked_nodes_updater_service;
 pub mod tpu;
 
 /// Returns an exit boolean to let other threads gracefully shut down
-pub fn graceful_panic(callback: Option<fn(&PanicInfo)>) -> Arc<AtomicBool> {
+pub fn graceful_panic(callback: Option<fn(&PanicHookInfo)>) -> Arc<AtomicBool> {
     let exit = Arc::new(AtomicBool::new(false));
     // Fail fast!
     let panic_hook = panic::take_hook();

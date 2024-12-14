@@ -10,10 +10,10 @@ members = [
     "transaction-relayer",
     "web"
 ]
-resolver = "1"
+resolver = "2"
 
 [workspace.package]
-version = "0.2.1"
+version = "0.2.4"
 authors = ["Jito Network <support@jito.network>"]
 repository = "https://github.com/jito-foundation/jito-relayer"
 homepage = "https://jito.network/"
@@ -24,32 +24,32 @@ edition = "2021"
 axum = "0.5.17"
 bincode = "1.3.3"
 bytes = "1.4.0"
-cached = "0.42.0"
+cached = "0.54.0"
 chrono = "0.4.24"
 clap = { version = "4", features = ["derive", "env"] }
 crossbeam-channel = "0.5.8"
-dashmap = "5.4.0"
+dashmap = "6.1.0"
 ed25519-dalek = "1.0.1"
-env_logger = "0.9"
+env_logger = "0.11.5"
 futures-util = "0.3"
 histogram = "0.6.9"
-hostname = "0.3"
-itertools = "0.10.5"
-x-block-engine = { path = "x_block_engine", version = "=0.2.1" }
-jito-block-engine = { path = "block_engine", version = "=0.2.1" }
-jito-core = { path = "core", version = "=0.2.1" }
-jito-protos = { path = "jito-protos", version = "=0.2.1" }
-jito-relayer = { path = "relayer", version = "=0.2.1" }
-jito-relayer-web = { path = "web", version = "=0.2.1" }
-jito-rpc = { path = "rpc", version = "=0.2.1" }
+hostname = "0.4.0"
+itertools = "0.13.0"
+x-block-engine = { path = "x_block_engine", version = "=0.2.4" }
+jito-block-engine = { path = "block_engine", version = "=0.2.4" }
+jito-core = { path = "core", version = "=0.2.4" }
+jito-protos = { path = "jito-protos", version = "=0.2.4" }
+jito-relayer = { path = "relayer", version = "=0.2.4" }
+jito-relayer-web = { path = "web", version = "=0.2.4" }
+jito-rpc = { path = "rpc", version = "=0.2.4" }
 jwt = { version = "0.16.0", features = ["openssl"] }
 keyed_priority_queue = "0.4.1"
 lazy_static = "1.4.0"
 log = "0.4.17"
 once_cell = "1"
 openssl = "0.10.51"
-prost = "0.12.1"
-prost-types = "0.12.1"
+prost = "0.12.6"
+prost-types = "0.12.6"
 protobuf-src = "1.1.0"
 quinn = "0.9"
 rand = "0.8.5"
@@ -59,21 +59,21 @@ serde = { version = "1.0.160", features = ["derive"] }
 serde_json = "1.0.96"
 serde_yaml = "0.9.32"
 sha2 = "0.10.6"
-solana-address-lookup-table-program = "=1.18.26"
-solana-client = "=1.18.26"
-solana-core = "=1.18.26"
-solana-gossip = "=1.18.26"
-solana-measure = "=1.18.26"
-solana-metrics = "=1.18.26"
-solana-net-utils = "=1.18.26"
-solana-perf = "=1.18.26"
-solana-program = "=1.18.26"
-solana-rayon-threadlimit = "=1.18.26"
-solana-runtime = "=1.18.26"
-solana-sdk = "=1.18.26"
-solana-streamer = "=1.18.26"
-solana-validator = "=1.18.26"
-thiserror = "1.0.40"
+solana-address-lookup-table-program = "=2.0.18"
+solana-client = "=2.0.18"
+solana-core = "=2.0.18"
+solana-gossip = "=2.0.18"
+solana-measure = "=2.0.18"
+solana-metrics = "=2.0.18"
+solana-net-utils = "=2.0.18"
+solana-perf = "=2.0.18"
+solana-program = "=2.0.18"
+solana-rayon-threadlimit = "=2.0.18"
+solana-runtime = "=2.0.18"
+solana-sdk = "=2.0.18"
+solana-streamer = "=2.0.18"
+agave-validator = "=2.0.18"
+thiserror = "2.0.7"
 tikv-jemallocator = { version = "0.4", features = ["profiling"] }
 tokio = { version = "1.37.0", features = ["full"] }
 tokio-stream = "0.1.12"
