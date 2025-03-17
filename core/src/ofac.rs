@@ -59,6 +59,7 @@ mod tests {
 
     use dashmap::DashMap;
     use solana_sdk::{
+        address_lookup_table::AddressLookupTableAccount,
         hash::Hash,
         instruction::{AccountMeta, CompiledInstruction, Instruction},
         message::{v0, v0::MessageAddressTableLookup, MessageHeader, VersionedMessage},
@@ -68,7 +69,7 @@ mod tests {
         signer::keypair::Keypair,
         transaction::{Transaction, VersionedTransaction},
     };
-    use solana_sdk::address_lookup_table::AddressLookupTableAccount;
+
     use crate::ofac::{
         is_ofac_address_in_lookup_table, is_ofac_address_in_static_keys, is_tx_ofac_related,
     };

@@ -1,5 +1,6 @@
 use std::{
     panic,
+    panic::PanicHookInfo,
     process,
     sync::{
         atomic::{AtomicBool, Ordering},
@@ -7,7 +8,7 @@ use std::{
     },
     time::Duration,
 };
-use std::panic::PanicHookInfo;
+
 use log::*;
 
 mod fetch_stage;

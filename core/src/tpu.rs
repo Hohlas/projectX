@@ -30,8 +30,7 @@ pub const DEFAULT_TPU_COALESCE_MS: u64 = 5;
 
 // allow multiple connections for NAT and any open/close overlap
 pub const MAX_QUIC_CONNECTIONS_PER_IP: usize = 8;
-
-pub const DEFAULT_MAX_CONNECTIONS_PER_IPADDR_PER_MINUTE: u64 = 8;
+pub const MAX_CONNECTIONS_PER_IPADDR_PER_MIN: u64 = 64;
 
 #[derive(Debug)]
 pub struct TpuSockets {
@@ -93,11 +92,12 @@ impl Tpu {
                     max_staked_quic_connections,
                     max_unstaked_quic_connections,
                     DEFAULT_MAX_STREAMS_PER_MS,
-                    DEFAULT_MAX_CONNECTIONS_PER_IPADDR_PER_MINUTE,
+                    MAX_CONNECTIONS_PER_IPADDR_PER_MIN,
                     DEFAULT_WAIT_FOR_CHUNK_TIMEOUT,
                     Duration::from_millis(DEFAULT_TPU_COALESCE_MS),
                 )
-                .unwrap().thread
+                .unwrap()
+                .thread
             })
             .collect::<Vec<_>>();
 
@@ -117,12 +117,12 @@ impl Tpu {
                         max_staked_quic_connections.saturating_add(max_unstaked_quic_connections),
                         0, // Prevent unstaked nodes from forwarding transactions
                         DEFAULT_MAX_STREAMS_PER_MS,
-                        DEFAULT_MAX_CONNECTIONS_PER_IPADDR_PER_MINUTE,
+                        MAX_CONNECTIONS_PER_IPADDR_PER_MIN,
                         DEFAULT_WAIT_FOR_CHUNK_TIMEOUT,
                         Duration::from_millis(DEFAULT_TPU_COALESCE_MS),
                     )
                     .unwrap()
-                        .thread
+                    .thread
                 })
                 .collect::<Vec<_>>(),
         );

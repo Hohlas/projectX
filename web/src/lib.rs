@@ -14,6 +14,7 @@ use axum::{
 use jito_relayer::{health_manager::HealthState, relayer::RelayerHandle};
 use log::debug;
 use serde::Serialize;
+use tokio::net::TcpListener;
 use tower::{buffer::BufferLayer, limit::RateLimitLayer, ServiceBuilder};
 
 /// State object that exposes info inside relayer
@@ -119,7 +120,6 @@ pub async fn start_relayer_web_server(
     requests_per_second: u64,
 ) {
     let app = build_relayer_router(state, max_buffered_request, requests_per_second);
-    let _ = axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await;
+    let listener = TcpListener::bind(addr).await.unwrap();
+    let _ = axum::serve(listener, app).await;
 }

@@ -224,8 +224,7 @@ impl<V: ValidatorAuther> AuthService for AuthServiceImpl<V> {
             warn!("Failed to create pubkey from string: {}", e);
             Status::invalid_argument("Invalid pubkey supplied.")
         })?;
-        let solana_pubkey = Pubkey::try_from(client_pubkey.to_bytes())
-            .map_err(|_| Status::invalid_argument("Invalid pubkey supplied."))?;
+        let solana_pubkey = Pubkey::from(client_pubkey.to_bytes());
 
         let auth_challenge = if let Some(challenge) = auth_challenges.get_priority(&client_ip).await
         {
@@ -235,6 +234,13 @@ impl<V: ValidatorAuther> AuthService for AuthServiceImpl<V> {
                 "Must invoke the GenerateAuthChallenge method before calling any method.",
             ))
         }?;
+
+        // check the client passed in public key against the originally requested public key
+        if auth_challenge.0.access_claims.client_pubkey != solana_pubkey {
+            return Err(Status::permission_denied(
+                "The pubkey provided does not match the pubkey that generated the challenge.",
+            ));
+        }
 
         // Prepended with the pubkey to invalidate any tx this server could maliciously send.
         let expected_challenge = format!("{}-{}", solana_pubkey, auth_challenge.0.challenge);

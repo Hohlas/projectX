@@ -12,12 +12,9 @@ use std::{
     time::Duration,
 };
 
+use agave_validator::admin_rpc_service::StakedNodesOverrides;
 use clap::Parser;
 use env_logger::Env;
-use x_block_engine::block_engine::{
-    BlockEngineConfig as ForgeBlockEngineConfig,
-    BlockEngineRelayerHandler as ForgeBlockEngineRelayerHandler,
-};
 use jito_block_engine::block_engine::{BlockEngineConfig, BlockEngineRelayerHandler};
 use jito_core::{
     graceful_panic,
@@ -44,7 +41,6 @@ use solana_sdk::{
     pubkey::Pubkey,
     signature::{read_keypair_file, Signer},
 };
-use agave_validator::admin_rpc_service::StakedNodesOverrides;
 use tikv_jemallocator::Jemalloc;
 use tokio::{
     runtime::Builder,
@@ -53,6 +49,10 @@ use tokio::{
 };
 use tonic::transport::Server;
 use transaction_relayer::forwarder::start_forward_and_delay_thread;
+use x_block_engine::block_engine::{
+    BlockEngineConfig as ForgeBlockEngineConfig,
+    BlockEngineRelayerHandler as ForgeBlockEngineRelayerHandler,
+};
 
 // no-op change to test ci
 
@@ -489,19 +489,18 @@ fn main() {
 
     // X Project Block Engine
     let is_connected_to_x_block_engine = Arc::new(AtomicBool::new(false));
-    let x_block_engine_config =
-        if !args.disable_mempool && args.x_block_engine_url.is_some() {
-            let block_engine_url = args.x_block_engine_url.unwrap();
-            let auth_service_url = args
-                .x_block_engine_auth_service_url
-                .unwrap_or(block_engine_url.clone());
-            Some(ForgeBlockEngineConfig {
-                block_engine_url,
-                auth_service_url,
-            })
-        } else {
-            None
-        };
+    let x_block_engine_config = if !args.disable_mempool && args.x_block_engine_url.is_some() {
+        let block_engine_url = args.x_block_engine_url.unwrap();
+        let auth_service_url = args
+            .x_block_engine_auth_service_url
+            .unwrap_or(block_engine_url.clone());
+        Some(ForgeBlockEngineConfig {
+            block_engine_url,
+            auth_service_url,
+        })
+    } else {
+        None
+    };
     let x_block_engine_forwarder = ForgeBlockEngineRelayerHandler::new(
         x_block_engine_config,
         block_engine_receiver,

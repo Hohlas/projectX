@@ -244,9 +244,9 @@ impl BlockEngineRelayerHandler {
         let (access_token, mut refresh_token) = Self::auth(&mut auth_client, keypair).await?;
 
         let access_token_expiration =
-            SystemTime::try_from(access_token.expires_at_utc.as_ref().unwrap().clone()).unwrap();
+            SystemTime::try_from(*access_token.expires_at_utc.as_ref().unwrap()).unwrap();
         let refresh_token_expiration =
-            SystemTime::try_from(refresh_token.expires_at_utc.as_ref().unwrap().clone()).unwrap();
+            SystemTime::try_from(*refresh_token.expires_at_utc.as_ref().unwrap()).unwrap();
 
         info!(
             "access_token_expiration: {:?}, refresh_token_expiration: {:?}",
@@ -509,13 +509,12 @@ impl BlockEngineRelayerHandler {
         shared_access_token: &Arc<Mutex<Token>>,
     ) -> BlockEngineResult<bool> {
         // expires_at_utc is checked for None when establishing connection
-        let access_token_expiration_time = shared_access_token
+        let access_token_expiration_time = *shared_access_token
             .lock()
             .unwrap()
             .expires_at_utc
             .as_ref()
-            .unwrap()
-            .clone();
+            .unwrap();
 
         let access_token_expiration_time =
             SystemTime::try_from(access_token_expiration_time).unwrap();
@@ -523,7 +522,7 @@ impl BlockEngineRelayerHandler {
             access_token_expiration_time.duration_since(SystemTime::now());
 
         let refresh_token_expiration_time =
-            SystemTime::try_from(refresh_token.expires_at_utc.as_ref().unwrap().clone()).unwrap();
+            SystemTime::try_from(*refresh_token.expires_at_utc.as_ref().unwrap()).unwrap();
         let refresh_token_duration_left =
             refresh_token_expiration_time.duration_since(SystemTime::now());
 
