@@ -227,10 +227,15 @@ impl BlockEngineRelayerHandler {
         is_connected_to_block_engine: &Arc<AtomicBool>,
         ofac_addresses: &HashSet<Pubkey>,
     ) -> BlockEngineResult<()> {
-        let mut auth_endpoint = Endpoint::from_str(auth_service_url).expect("valid auth url");
+        let mut auth_endpoint = Endpoint::from_str(auth_service_url)
+            .expect("valid auth url")
+            .tcp_keepalive(Some(Duration::from_secs(60)))
+            .http2_keep_alive_interval(Duration::from_secs(30))
+            .keep_alive_timeout(Duration::from_secs(10));
+
         if auth_service_url.contains("https") {
             auth_endpoint = auth_endpoint
-                .tls_config(tonic::transport::ClientTlsConfig::new())
+                .tls_config(tonic::transport::ClientTlsConfig::new().with_native_roots())
                 .expect("invalid tls config");
         }
         let channel = auth_endpoint
@@ -259,11 +264,14 @@ impl BlockEngineRelayerHandler {
         let shared_access_token = Arc::new(Mutex::new(access_token));
         let auth_interceptor = AuthInterceptor::new(shared_access_token.clone());
 
-        let mut block_engine_endpoint =
-            Endpoint::from_str(block_engine_url).expect("valid block engine url");
+        let mut block_engine_endpoint = Endpoint::from_str(block_engine_url)
+            .expect("valid block engine url")
+            .tcp_keepalive(Some(Duration::from_secs(60)))
+            .http2_keep_alive_interval(Duration::from_secs(30))
+            .keep_alive_timeout(Duration::from_secs(10));
         if block_engine_url.contains("https") {
             block_engine_endpoint = block_engine_endpoint
-                .tls_config(tonic::transport::ClientTlsConfig::new())
+                .tls_config(tonic::transport::ClientTlsConfig::new().with_native_roots())
                 .expect("invalid tls config");
         }
         let block_engine_channel = block_engine_endpoint
