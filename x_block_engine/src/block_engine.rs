@@ -37,7 +37,7 @@ use tokio::{
     runtime::Runtime,
     select,
     sync::{
-        broadcast, mpsc,
+        broadcast,
         mpsc::{channel, Sender},
         watch,
     },
@@ -99,8 +99,6 @@ pub struct BlockEngineRelayerHandler {
 
 impl BlockEngineRelayerHandler {
     const BLOCK_ENGINE_PACKET_QUEUE_CAPACITY: usize = 1_000;
-
-    const BLOCK_ENGINE_CONNECTED_VALIDATORS_QUEUE_CAPACITY: usize = 100;
 
     #[allow(clippy::too_many_arguments)]
     pub fn new(
@@ -333,13 +331,6 @@ impl BlockEngineRelayerHandler {
             .await
             .map_err(|e| BlockEngineError::BlockEngineFailure(e.to_string()))?;
 
-        let (connected_validators_sender, connected_validators_receiver) =
-            mpsc::channel(Self::BLOCK_ENGINE_CONNECTED_VALIDATORS_QUEUE_CAPACITY);
-        let _response = client
-            .connected_validators_stream(ReceiverStream::new(connected_validators_receiver))
-            .await
-            .map_err(|e| BlockEngineError::BlockEngineFailure(e.to_string()))?;
-
         // sender tracked as block_engine_relayer-loop_stats.block_engine_packet_sender_len
         let (block_engine_packet_sender, block_engine_packet_receiver) =
             channel(Self::BLOCK_ENGINE_PACKET_QUEUE_CAPACITY);
@@ -351,8 +342,8 @@ impl BlockEngineRelayerHandler {
         Self::handle_packet_stream(
             block_engine_packet_sender,
             block_engine_receiver,
-            connected_validators_sender,
             connected_validators_watch,
+            client,
             subscribe_aoi_stream,
             subscribe_poi_stream,
             auth_client,
@@ -371,8 +362,8 @@ impl BlockEngineRelayerHandler {
     async fn handle_packet_stream(
         block_engine_packet_sender: Sender<PacketBatchUpdate>,
         block_engine_receiver: &mut broadcast::Receiver<BlockEnginePackets>,
-        connected_validators_sender: Sender<ConnectedValidatorsUpdate>,
         connected_validators_watch: &mut watch::Receiver<HashSet<Pubkey>>,
+        client: BlockEngineRelayerClient<InterceptedService<Channel, AuthInterceptor>>,
         subscribe_aoi_stream: Response<Streaming<AccountsOfInterestUpdate>>,
         subscribe_poi_stream: Response<Streaming<ProgramsOfInterestUpdate>>,
         mut auth_client: AuthServiceClient<Channel>,
@@ -468,9 +459,7 @@ impl BlockEngineRelayerHandler {
                 maybe_changed = connected_validators_watch.changed() => {
                     if maybe_changed.is_ok() {
                         let validators = connected_validators_watch.borrow_and_update();
-                        let _ = connected_validators_sender.try_send(ConnectedValidatorsUpdate {
-                            validators: validators.iter().map(|v| v.to_bytes().into()).collect()
-                        });
+                        tokio::spawn(send_connected_validators(client.clone(), validators.clone()));
                     }
                 }
                 _ = auth_refresh_interval.tick() => {
@@ -739,4 +728,10 @@ fn is_aoi_in_static_keys(
                 // note: can't detect CPIs without execution, so aggressively forward txs than contain account in POI
                 || programs_of_interest.cache_get(acc).is_some()
         })
+}
+
+async fn send_connected_validators(mut client: BlockEngineRelayerClient<InterceptedService<Channel, AuthInterceptor>>, validators: HashSet<Pubkey>) {
+    let _ = client.connected_validators_notify(ConnectedValidatorsUpdate {
+        validators: validators.iter().map(|v| v.to_bytes().into()).collect()
+    }).await;
 }
