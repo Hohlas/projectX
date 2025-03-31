@@ -3010,7 +3010,7 @@ checksum = "d75a2a4b1b190afb6f5425f10f6a8f959d2ea0b9c2b1d79553551850539e4674"
 
 [[package]]
 name = "jito-block-engine"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "cached",
  "dashmap 6.1.0",
@@ -3032,7 +3032,7 @@ dependencies = [
 
 [[package]]
 name = "jito-core"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "bincode",
  "crossbeam-channel",
@@ -3058,7 +3058,7 @@ dependencies = [
 
 [[package]]
 name = "jito-protos"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "bincode",
  "bytes",
@@ -3073,7 +3073,7 @@ dependencies = [
 
 [[package]]
 name = "jito-relayer"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "chrono",
  "crossbeam-channel",
@@ -3104,7 +3104,7 @@ dependencies = [
 
 [[package]]
 name = "jito-relayer-web"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "axum 0.8.1",
  "jito-relayer",
@@ -3118,7 +3118,7 @@ dependencies = [
 
 [[package]]
 name = "jito-rpc"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "crossbeam-channel",
  "dashmap 6.1.0",
@@ -9050,7 +9050,7 @@ dependencies = [
 
 [[package]]
 name = "transaction-relayer"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "agave-validator",
  "bincode",
@@ -9721,7 +9721,7 @@ checksum = "1e9df38ee2d2c3c5948ea468a8406ff0db0b29ae1ffde1bcf20ef305bcc95c51"
 
 [[package]]
 name = "x-block-engine"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "cached",
  "dashmap 6.1.0",
