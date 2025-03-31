@@ -3,7 +3,6 @@ syntax = "proto3";
 import "packet.proto";
 import "shared.proto";
 import "bundle.proto";
-import "sanitized.proto";
 
 package block_engine;
 
@@ -51,13 +50,6 @@ message ExpiringPacketBatch {
   uint32 expiry_ms = 3;
 }
 
-message ExpiringSanitizedTransactionBatch {
-  shared.Header header = 1;
-  sanitized.SanitizedTransactionBatch batch = 2;
-  uint32 expiry_ms = 3;
-}
-
-
 // Packets and heartbeats are sent over the same stream.
 // ExpiringPacketBatches have an expiration attached to them so the block engine can track
 // how long it has until the relayer forwards the packets to the validator.
@@ -72,13 +64,6 @@ message PacketBatchUpdate {
 
 message StartExpiringPacketStreamResponse {
   shared.Heartbeat heartbeat = 1;
-}
-
-message SanitizedTransactionBatchUpdate {
-  oneof msg {
-    ExpiringSanitizedTransactionBatch batches = 1;
-    shared.Heartbeat heartbeat = 2;
-  }
 }
 
 message ConnectedValidatorsUpdate {
@@ -117,9 +102,9 @@ service BlockEngineRelayer {
   // NOTE: This is a bi-directional stream due to a bug with how Envoy handles half closed client-side streams.
   // The issue is being tracked here: https://github.com/envoyproxy/envoy/issues/22748. In the meantime, the
   // server will stream heartbeats to clients at some reasonable cadence.
-  rpc StartExpiringSanitizedTransactionStream (stream SanitizedTransactionBatchUpdate) returns (stream StartExpiringPacketStreamResponse) {}
-
   rpc StartExpiringPacketStream (stream PacketBatchUpdate) returns (stream StartExpiringPacketStreamResponse) {}
 
   rpc ConnectedValidatorsStream (stream ConnectedValidatorsUpdate) returns (ConnectedValidatorsResponse) {}
+
+  rpc ConnectedValidatorsNotify (ConnectedValidatorsUpdate) returns (ConnectedValidatorsResponse) {}
 }
