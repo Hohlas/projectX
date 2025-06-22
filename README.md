@@ -56,15 +56,27 @@ git push https://$PAT@github.com/Hohlas/projectX.git main
 ### copy bin from this git
 
 ```bash
+cd $HOME
 if [ -d ~/lite-relayer ]; then rm -r ~/lite-relayer; fi
 git clone https://github.com/Hohlas/projectX.git ~/lite-relayer
-mkdir -p ~/lite-relayer/target/release
-cp ~/sol_git/Jito/projectx_relayer.service ~/solana/relayer.service
+cp ~/lite-relayer/relayer.service ~/solana/relayer.service
 ln -sfn ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
-unzip -oj ~/sol_git/Jito/projectx_relayer.zip -d ~/lite-relayer/target/release
+unzip -oj ~/lite-relayer/target/release/projectx_relayer.zip -d ~/lite-relayer/target/release
+~/lite-relayer/target/release/transaction-relayer -V
 ```
 
-
+```bash
+# switch to local relayer
+solana-validator -l $HOME/solana/ledger set-relayer-config --relayer-url http://127.0.0.1:11226 
+```
+```bash
+# switch to public relayer
+solana-validator -l ~/solana/ledger set-relayer-config --relayer-url http://frankfurt.mainnet.relayer.jito.wtf:8100 
+```
+```bash
+# switch block-engine
+solana-validator -l $HOME/solana/ledger set-block-engine-config --block-engine-url https://frankfurt.mainnet.block-engine.jito.wtf
+```
 
 
 
