@@ -1,1 +1,1 @@
-projectX transaction-relayer v0.3.2
+projectX relayer 0.3.2
