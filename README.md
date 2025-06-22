@@ -1,30 +1,73 @@
-# Project X Sol Relayer
-Relayer acts as a transaction processing unit (TPU) proxy for Solana validators.
+## Project X Sol Relayer
 
-# Building
-```shell
-#git clone relayer
-$ git submodule update -i -r
-$ cargo build -r --bin transaction-relayer
+<details>
+<summary>neccesary software install</summary> 
+  
+```bash  
+sudo apt update && sudo apt upgrade -y
+sudo apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler -y
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+. "$HOME/.cargo/env"            # For sh/bash/zsh/ash/dash/pdksh
+# source $HOME/.cargo/env
+```
+</details>
+
+
+
+<details>
+<summary>Clone relayer repo and build binary</summary> 
+
+### clone & buid  
+
+```bash  
+cd $HOME
+if [ -d ~/lite-relayer ]; then rm -r ~/lite-relayer; fi
+git clone https://github.com/projectxsol/lite-relayer.git
+cd lite-relayer
+git fetch
+git submodule update --init --recursive &&
+cargo build --release --bin transaction-relayer
+cd ~/lite-relayer/target/release
+RELAYER_TAG=$(./transaction-relayer -V | awk '{print $2}') # check version
+zip ~/projectx_relayer.zip transaction-relayer
 ```
 
-# Running 
-1.  Choose one server from this list:
-```
-TODO
+### push bin 2 git
+
+```bash  
+cd $HOME
+if [ -d ~/lite-relayer ]; then rm -r ~/lite-relayer; fi
+git clone https://github.com/Hohlas/projectX.git ~/lite-relayer
+rm -r ~/lite-relayer/target/release/*
+cd ~/lite-relayer/target/release
+git config --global user.email "mail@hohla.ru"
+git config --global user.name "Hohlas"
+mv ~/projectx_relayer.zip ~/lite-relayer/target/release/projectx_relayer.zip
+echo "projectX relayer $RELAYER_TAG" > README.md
+git add .
+git commit -m "Add projectx_relayer.zip v$RELAYER_TAG"
+git push https://$PAT@github.com/Hohlas/projectX.git main
 ```
 
-2. Run
-```
-./target/release/transaction-relayer --keypair-path /root/config/relayer.json \
---signing-key-pem-path /root/config/auth \
---verifying-key-pem-path /root/config/auth.pub \
---webserver-bind-addr 127.0.0.1:5050 \
---block-engine-url http://ОДИН_ИЗ_СЕРВЕРОВ_ИЗ_СПИСКА_2:11227 \
---block-engine-auth-service-url http://ОДИН_ИЗ_СЕРВЕРОВ_ИЗ_СПИСКА_2:11227
+</details>
+
+
+
+### copy bin from this git
+
+```bash
+if [ -d ~/lite-relayer ]; then rm -r ~/lite-relayer; fi
+git clone https://github.com/Hohlas/projectX.git ~/lite-relayer
+mkdir -p ~/lite-relayer/target/release
+cp ~/sol_git/Jito/projectx_relayer.service ~/solana/relayer.service
+ln -sfn ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
+unzip -oj ~/sol_git/Jito/projectx_relayer.zip -d ~/lite-relayer/target/release
 ```
 
-4. Pay attention to the keys --signing-key-pem-path, --verifying-key-pem-path, --keypair-path you must generate them yourself!!!
+
+
+
+
 
 
 
