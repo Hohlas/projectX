@@ -77,7 +77,7 @@ solana-validator -l ~/solana/ledger set-relayer-config --relayer-url http://fran
 ```
 ```bash
 # switch block-engine
-solana-validator -l $HOME/solana/ledger set-block-engine-config --block-engine-url https://frankfurt.mainnet.block-engine.jito.wtf
+solana-validator -l $HOME/solana/ledger set-block-engine-config --block-engine-url http://de.projectx.run:11227
 ```
 
 
