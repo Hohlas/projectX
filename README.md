@@ -64,6 +64,7 @@ git clone https://github.com/Hohlas/projectX.git ~/lite-relayer
 cp ~/lite-relayer/relayer.service ~/solana/relayer.service
 ln -sfn ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
 unzip -oj ~/lite-relayer/target/release/projectx_relayer.zip -d ~/lite-relayer/target/release
+systemctl daemon-reload
 ~/lite-relayer/target/release/transaction-relayer -V
 ```
 
