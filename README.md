@@ -1,5 +1,7 @@
 ## Project X Sol Relayer
 
+[projectx.run](https://projectx.run) | [Install Relayer](https://docs.projectx.run/how-to-connect/install-relayer#begin-with-neccesary-software-install)
+
 <details>
 <summary>neccesary software install</summary> 
   
