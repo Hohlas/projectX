@@ -55,7 +55,7 @@ git push https://$PAT@github.com/Hohlas/projectX.git main
 
 
 
-### copy bin from this git
+### copy bin from git
 
 ```bash
 cd $HOME
